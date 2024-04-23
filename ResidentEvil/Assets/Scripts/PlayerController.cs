@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     public float runSpeed;
     public bool canMove;
     public bool canQuickTurn;
+    public bool isQuickTurning;
 
     // Start is called before the first frame update
     void Start()
@@ -31,22 +32,24 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (controls.Movement.Run.IsPressed())
+        if (!isQuickTurning)
         {
-            moveType = Run;
-        }
-        else
-        {
-            moveType = Walk;
+            if (controls.Movement.Run.IsPressed())
+            {
+                moveType = Run;
+            }
+            else
+            {
+                moveType = Walk;
+            }
         }
 
         if (controls.Movement.QuickTurn.IsPressed() && canQuickTurn)
         {
-            canMove = false;
-            StartCoroutine(QuickTurn());
+            StartCoroutine(QuickTurnCooldown());
         }
 
-        if (canMove)
+        if (canMove || isQuickTurning)
         {
             moveType();
         }
@@ -109,10 +112,19 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private IEnumerator QuickTurn()
+    private void QuickTurn()
     {
-        transform.Rotate(Vector3.up * turnSpeed * 5 * Time.deltaTime);
-        yield return new WaitForSeconds(1f);
+            transform.Rotate(Vector3.up * turnSpeed * 4 * Time.deltaTime);
+    }
+
+    private IEnumerator QuickTurnCooldown()
+    {
+        moveType = QuickTurn;
+        isQuickTurning = true;
+        canQuickTurn = false;
+        canMove = false;
+        yield return new WaitForSeconds(.5f);
+        isQuickTurning = false;
         canQuickTurn = true;
         canMove = true;
     }

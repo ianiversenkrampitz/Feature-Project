@@ -548,7 +548,7 @@ GameObject:
   - component: {fileID: 1152376359}
   - component: {fileID: 1152376364}
   m_Layer: 0
-  m_Name: Capsule
+  m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -687,6 +687,7 @@ MonoBehaviour:
   runSpeed: 8
   canMove: 0
   canQuickTurn: 0
+  isQuickTurning: 0
 --- !u!1 &1478982691
 GameObject:
   m_ObjectHideFlags: 0
