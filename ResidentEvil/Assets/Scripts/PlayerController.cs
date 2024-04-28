@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     public bool canMove;
     public bool canQuickTurn;
     public bool isQuickTurning;
+    public GameObject Camera;
 
     // Start is called before the first frame update
     void Start()
@@ -52,6 +53,16 @@ public class PlayerController : MonoBehaviour
         if (canMove || isQuickTurning)
         {
             moveType();
+        }
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("CameraChange"))
+        {
+            Camera.transform.position = other.transform.parent.position;
+            Camera.transform.rotation = other.transform.parent.rotation;
+            print("changed camera.");
         }
     }
 
