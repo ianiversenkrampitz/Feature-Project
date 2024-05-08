@@ -1,10 +1,11 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 /*
  * Iversen-Krampitz, Ian 
- * 05/04/2024
+ * 05/07/2024
  * Controls player movement and camera changing. 
  */
 
@@ -21,6 +22,7 @@ public class PlayerController : MonoBehaviour
     public bool isQuickTurning;
     public GameObject Camera;
     public GameObject tempCamera;
+    public CharacterController characterController;
 
     // Start is called before the first frame update
     void Start()
@@ -31,9 +33,9 @@ public class PlayerController : MonoBehaviour
         canMove = true;
     }
 
-    // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
+        //only moves if not quickturning 
         if (!isQuickTurning)
         {
             if (controls.Movement.Run.IsPressed())
@@ -46,6 +48,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        //quickturns 
         if (controls.Movement.QuickTurn.IsPressed() && canQuickTurn)
         {
             StartCoroutine(QuickTurnCooldown());
@@ -54,6 +57,14 @@ public class PlayerController : MonoBehaviour
         if (canMove || isQuickTurning)
         {
             moveType();
+        }
+
+        //checks if the player is above ground, snaps down to ground
+        RaycastHit hit; 
+
+        if (!Physics.Raycast(transform.position, Vector3.down, out hit, 1f))
+        {
+            transform.Translate(Vector3.down * 3 * Time.deltaTime);
         }
     }
 
@@ -74,6 +85,7 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
     /// <summary>
     /// walk movement 
     /// </summary>
@@ -160,6 +172,7 @@ public class PlayerController : MonoBehaviour
         canQuickTurn = true;
         canMove = true;
     }
+
     /// <summary>
     /// creates a delay between camera movement to emulate load times 
     /// </summary>
